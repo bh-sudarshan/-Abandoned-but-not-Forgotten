@@ -1,0 +1,6 @@
+{
+  "name": "Abandoned but not Forgotten",
+  "description": "Retro 1990s Nokia-inspired open-world planetary exploration game where players recover abandoned space missions, probes, and historic rovers across infinite Moon and Mars coordinates.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,268 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Stores user profile data, settings, exploration high scores and discovery counts",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "User unique identifier"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name",
+          "maxLength": 80
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address",
+          "maxLength": 120
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Profile picture URL"
+        },
+        "totalObjectsFound": {
+          "type": "number",
+          "description": "Total number of abandoned objects found across Moon and Mars"
+        },
+        "moonObjectsFound": {
+          "type": "number",
+          "description": "Number of Moon abandoned objects found"
+        },
+        "marsObjectsFound": {
+          "type": "number",
+          "description": "Number of Mars abandoned objects found"
+        },
+        "highScore": {
+          "type": "number",
+          "description": "Combined overall highest score"
+        },
+        "moonScore": {
+          "type": "number",
+          "description": "Highest score achieved on Moon"
+        },
+        "marsScore": {
+          "type": "number",
+          "description": "Highest score achieved on Mars"
+        },
+        "favoriteVehicle": {
+          "type": "string",
+          "description": "Selected NASA rover",
+          "maxLength": 50
+        },
+        "soundEnabled": {
+          "type": "boolean",
+          "description": "User audio preference"
+        },
+        "speedMode": {
+          "type": "string",
+          "description": "Default rover speed mode",
+          "maxLength": 20
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account registration timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last profile update timestamp"
+        }
+      },
+      "required": ["uid", "displayName"]
+    },
+    "UserDiscovery": {
+      "title": "UserDiscovery",
+      "description": "Represents an abandoned space object found by a player in the game",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID of the user who made the discovery"
+        },
+        "objectId": {
+          "type": "string",
+          "description": "Identifier of the abandoned object"
+        },
+        "objectName": {
+          "type": "string",
+          "description": "Title of the discovered object",
+          "maxLength": 100
+        },
+        "targetBody": {
+          "type": "string",
+          "description": "Planetary body: MOON or MARS",
+          "enum": ["MOON", "MARS"]
+        },
+        "points": {
+          "type": "number",
+          "description": "Scientific exploration score awarded"
+        },
+        "coordinates": {
+          "type": "string",
+          "description": "Planetary grid coordinates where found",
+          "maxLength": 50
+        },
+        "roverUsed": {
+          "type": "string",
+          "description": "NASA rover active when discovery was made",
+          "maxLength": 50
+        },
+        "foundAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when discovered"
+        }
+      },
+      "required": ["userId", "objectId", "objectName", "targetBody"]
+    },
+    "AbandonedObject": {
+      "title": "AbandonedObject",
+      "description": "NASA / space historical abandoned artifact details manageable by admin",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique key for the object"
+        },
+        "name": {
+          "type": "string",
+          "description": "Historical mission or artifact name",
+          "maxLength": 100
+        },
+        "targetBody": {
+          "type": "string",
+          "description": "Target planetary surface",
+          "enum": ["MOON", "MARS"]
+        },
+        "body": {
+          "type": "string",
+          "description": "Landing site or crater location",
+          "maxLength": 100
+        },
+        "dates": {
+          "type": "string",
+          "description": "Active operational dates",
+          "maxLength": 80
+        },
+        "discovery": {
+          "type": "string",
+          "description": "Historical scientific discovery and payload summary",
+          "maxLength": 1000
+        },
+        "status": {
+          "type": "string",
+          "description": "Current resting or mission state",
+          "maxLength": 80
+        },
+        "points": {
+          "type": "number",
+          "description": "Exploration recovery points"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Photo or blueprint image URL",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Catalog registration timestamp"
+        }
+      },
+      "required": ["name", "targetBody", "body", "dates", "discovery", "status", "points"]
+    },
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "NASA planetary rover vehicle selectable by players and manageable by admin",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique rover identifier (e.g. VIPER, CURIOSITY)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Short rover name",
+          "maxLength": 50
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Official vehicle mission title",
+          "maxLength": 100
+        },
+        "destination": {
+          "type": "string",
+          "description": "Assigned planetary destination",
+          "enum": ["MOON", "MARS"]
+        },
+        "type": {
+          "type": "string",
+          "description": "Rover vehicle classification",
+          "maxLength": 100
+        },
+        "site": {
+          "type": "string",
+          "description": "Primary exploration operational site",
+          "maxLength": 100
+        },
+        "massSpeed": {
+          "type": "string",
+          "description": "Chassis weight and speed metric",
+          "maxLength": 80
+        },
+        "power": {
+          "type": "string",
+          "description": "Power generation and battery technology",
+          "maxLength": 100
+        },
+        "payload": {
+          "type": "string",
+          "description": "Scientific instruments payload",
+          "maxLength": 200
+        },
+        "record": {
+          "type": "string",
+          "description": "Historical mission milestone or record",
+          "maxLength": 200
+        },
+        "status": {
+          "type": "string",
+          "description": "Operational mission status",
+          "maxLength": 80
+        },
+        "telemetryKey": {
+          "type": "string",
+          "description": "LCD HUD telemetry sensor metric key",
+          "maxLength": 20
+        },
+        "isAvailable": {
+          "type": "boolean",
+          "description": "Whether vehicle is unlocked for players"
+        }
+      },
+      "required": ["id", "name", "fullName", "destination", "type"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "UserProfile" },
+      "description": "User profiles, exploration high scores, and settings"
+    },
+    "/users/{userId}/discoveries/{discoveryId}": {
+      "schema": { "$ref": "UserDiscovery" },
+      "description": "Subcollection of abandoned objects found by specific player"
+    },
+    "/abandoned_objects/{objectId}": {
+      "schema": { "$ref": "AbandonedObject" },
+      "description": "Master list of abandoned objects on Moon and Mars"
+    },
+    "/vehicles/{vehicleId}": {
+      "schema": { "$ref": "Vehicle" },
+      "description": "Master list of NASA rovers selectable by players"
+    }
+  }
+}

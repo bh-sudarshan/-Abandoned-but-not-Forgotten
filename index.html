@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Abandoned but not Forgotten</title>
+    <meta name="description" content="Retro 1990s Nokia-inspired open-world planetary exploration game where players recover abandoned space missions, probes, and historic rovers across infinite Moon and Mars coordinates." />
+    <meta property="og:title" content="Abandoned but not Forgotten" />
+    <meta property="og:description" content="Retro 1990s Nokia-inspired open-world planetary exploration game where players recover abandoned space missions, probes, and historic rovers across infinite Moon and Mars coordinates." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="desktop-game-container" id="handheld-shell" data-surface="MOON">
+      <!-- Fullscreen Desktop Game Viewport -->
+      <section class="desktop-viewport" id="lcd-screen-viewport" data-surface="MOON" aria-label="Abandoned but not Forgotten Desktop Game">
+
+        <!-- Top Desktop Game HUD & Icon Control Bar -->
+        <header class="desktop-hud-bar" id="desktop-hud-bar">
+          <!-- Left: Telemetry & Score -->
+          <div class="hud-left-group">
+            <div class="hud-item hud-lives-item" title="Rover Chassis Integrity / Lives">
+              <span class="hud-label">LIVES</span>
+              <div class="lives-container" id="hud-lives" aria-label="5 lives remaining">
+                <span class="life-pip"></span>
+                <span class="life-pip"></span>
+                <span class="life-pip"></span>
+                <span class="life-pip"></span>
+                <span class="life-pip"></span>
+              </div>
+            </div>
+
+            <div class="hud-item" title="Current Exploration Score">
+              <span class="hud-label">SCORE</span>
+              <span class="hud-val" id="hud-score">00000</span>
+            </div>
+
+            <div class="hud-item" title="All-time High Score">
+              <span class="hud-label">HIGH</span>
+              <span class="hud-val" id="hud-hiscore">00000</span>
+            </div>
+
+            <div class="hud-telemetry-strip">
+              <span class="telemetry-badge site-badge" id="sub-location">MOON [NOBILE]</span>
+              <span class="telemetry-item" id="sub-coords">X:+000 Y:+000</span>
+              <span class="telemetry-item" id="sub-nss">ICE: 0320 PPM</span>
+              <span class="telemetry-badge p2-badge-hud" id="sub-p2">2P: STANDBY</span>
+            </div>
+          </div>
+
+          <!-- Center: Active Rover Observation Telemetry Ticker -->
+          <div class="observation-ticker" id="observation-ticker" role="status" aria-live="polite">
+            [READY] NASA SURFACE TELEMETRY ACTIVE
+          </div>
+
+          <!-- Right: Desktop Game Icon Toolbar -->
+          <div class="desktop-icon-toolbar" id="desktop-toolbar" role="toolbar" aria-label="Game Controls Toolbar">
+            <!-- 0. Abort / Return to Home Screen -->
+            <button class="icon-tool-btn home-tool-btn" id="btn-quit-home" type="button" title="Abort Mission & Return to Home Screen [Key: Esc]" aria-label="Return to Home Screen">
+              <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              <span class="icon-sub-badge" id="home-sub-label">HOME</span>
+              <span class="key-hint">ESC</span>
+            </button>
+
+            <!-- 1. Player 2 Co-Op Escort Drone Toggle -->
+            <button class="icon-tool-btn p2-btn" id="btn-player-2" type="button" title="Deploy / Recall Player 2 Drone [Key: 2]" aria-label="Player 2 Co-Op Drone">
+              <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v4M8 6h8M5 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0zm18 0a2 2 0 1 0-4 0 2 2 0 0 0 4 0zM12 10a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm-6 9 3-3m6 0 3 3"/>
+              </svg>
+              <span class="icon-sub-badge p2-dot-badge" id="p2-sub-label">2P</span>
+              <span class="key-hint">2</span>
+            </button>
+
+            <!-- 2. NASA Rover Fleet Hangar -->
+            <button class="icon-tool-btn" id="btn-soft-hangar" type="button" title="NASA Rover Fleet Hangar [Key: R]" aria-label="Rover Fleet Hangar">
+              <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="16" height="8" x="4" y="8" rx="2"/>
+                <circle cx="6" cy="18" r="3"/>
+                <circle cx="18" cy="18" r="3"/>
+                <path d="M9 8V5l3-2h3v5M14 8v3"/>
+              </svg>
+              <span class="icon-sub-badge" id="current-rover-short">FLEET</span>
+              <span class="key-hint">R</span>
+            </button>
+
+            <!-- 3. Planetary Surface Toggle (Moon / Mars) - Locked mid-game -->
+            <button class="icon-tool-btn" id="btn-soft-surface" type="button" title="Planetary Destination (Select at Home Screen, Locked mid-mission) [Key: Tab]" aria-label="Planetary Destination">
+              <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="8"/>
+                <path d="M5 12c0-3.87 3.13-7 7-7M9 16c1.5 1 3.5 1 5-1"/>
+              </svg>
+              <span class="icon-sub-badge" id="site-short-label">MOON</span>
+              <span class="key-hint">TAB</span>
+            </button>
+
+            <!-- 4. Speed / Turbo Toggle -->
+            <button class="icon-tool-btn" id="btn-pill-speed" type="button" title="Cycle Rover Speed (1X, 2X, FAST) [Key: T]" aria-label="Cycle Speed">
+              <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              <span class="icon-sub-badge" id="speed-sub-label">1X</span>
+              <span class="key-hint">T</span>
+            </button>
+
+            <!-- 5. Sound Mute / Unmute -->
+            <button class="icon-tool-btn" id="btn-soft-sound" type="button" title="Toggle Sound [Key: M]" aria-label="Toggle Audio">
+              <svg class="tool-icon sound-on-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+              <span class="icon-sub-badge">AUDIO</span>
+              <span class="key-hint">M</span>
+            </button>
+
+            <!-- 6. Pause / Resume -->
+            <button class="icon-tool-btn" id="btn-soft-pause" type="button" title="Pause / Resume Game [Key: P or Space]" aria-label="Pause or Resume Game">
+              <svg class="tool-icon pause-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="4" width="4" height="16" rx="1"/>
+                <rect x="14" y="4" width="4" height="16" rx="1"/>
+              </svg>
+              <span class="icon-sub-badge">PAUSE</span>
+              <span class="key-hint">P</span>
+            </button>
+
+            <!-- 7. Reset / Restart Run -->
+            <button class="icon-tool-btn" id="btn-pill-reset" type="button" title="Restart Current Expedition" aria-label="Restart Exploration">
+              <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.85.99 6.57 2.57L21 8"/>
+                <polyline points="21 3 21 8 16 8"/>
+              </svg>
+              <span class="icon-sub-badge">RESET</span>
+            </button>
+
+            <!-- 8. Fullscreen Toggle -->
+            <button class="icon-tool-btn" id="btn-fullscreen" type="button" title="Toggle Fullscreen [Key: F]" aria-label="Toggle Fullscreen">
+              <svg class="tool-icon" id="fs-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+              </svg>
+              <span class="icon-sub-badge">FULL</span>
+              <span class="key-hint">F</span>
+            </button>
+
+            <!-- 9. Keyboard Shortcuts Guide -->
+            <button class="icon-tool-btn" id="btn-controls-help" type="button" title="Keyboard Shortcuts [Key: H]" aria-label="Keyboard Shortcuts">
+              <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="5" rx="2"/>
+                <line x1="6" x2="6.01" y1="9" y2="9"/>
+                <line x1="10" x2="10.01" y1="9" y2="9"/>
+                <line x1="14" x2="14.01" y1="9" y2="9"/>
+                <line x1="18" x2="18.01" y1="9" y2="9"/>
+                <line x1="7" x2="17" y1="14" y2="14"/>
+              </svg>
+              <span class="icon-sub-badge">HELP</span>
+              <span class="key-hint">H</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Main Infinite World HTML5 Canvas (Full Viewport) -->
+        <canvas id="game-canvas" aria-label="NASA Rover Infinite Planetary Surface Grid"></canvas>
+
+        <!-- Overlay: Start / Boot Title Screen -->
+        <div class="lcd-overlay" id="overlay-start">
+          <div class="modal-dialog-box start-dialog-box">
+            <div class="mission-badge-header">
+              <span>★ DEEP SPACE RECOVERY INITIATIVE ★</span>
+              <span>HISTORICAL ARCHIVES</span>
+            </div>
+
+            <h1 class="title-glitch" id="game-title">ABANDONED BUT NOT FORGOTTEN</h1>
+            <p class="title-sub" id="game-subtitle">INFINITE PLANETARY EXPEDITION & RELIC RECOVERY</p>
+            
+            <!-- Direct Destination Selector on Home Screen -->
+            <div class="planet-select-container">
+              <span class="planet-select-title">SELECT EXPEDITION BODY (LOCKED ONCE LAUNCHED)</span>
+              <div class="planet-pills-row">
+                <button class="planet-pick-btn active" id="btn-pick-moon" type="button" data-surface="MOON">
+                  <span class="planet-icon">🌕</span>
+                  <span class="planet-name">MOON</span>
+                  <span class="planet-sub">SOUTH POLE / NOBILE CRATER</span>
+                </button>
+                <button class="planet-pick-btn" id="btn-pick-mars" type="button" data-surface="MARS">
+                  <span class="planet-icon">🔴</span>
+                  <span class="planet-name">MARS</span>
+                  <span class="planet-sub">JEZERO DELTA / GALE CRATER</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="instructions-box" id="instructions-guide">
+              <div class="inst-line"><strong>• INFINITE SURFACE:</strong> Steer rover in any direction with WASD or Arrow Keys.</div>
+              <div class="inst-line"><strong>• RADAR CHEVRON:</strong> Follow the on-screen arrow to recover abandoned NASA missions (+100 PTS).</div>
+              <div class="inst-line"><strong>• NSS DETECTOR:</strong> Scan scientific volatile probes (+25 PTS) to build your sample trailer.</div>
+              <div class="inst-line"><strong>• PLANETARY RULE:</strong> Expedition is locked to chosen planet. Return to Home to change body.</div>
+              <div class="inst-line"><strong>• HAZARDS:</strong> Dodge boulder clusters and avoid colliding with your own trailer train.</div>
+            </div>
+
+            <div class="start-meta-box">
+              <div class="meta-row">
+                <span class="meta-lbl">CURRENT DESTINATION:</span>
+                <span class="meta-val" id="start-site-label">MOON (SOUTH POLE)</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-lbl">DEPLOYED ROVER:</span>
+                <span class="meta-val" id="start-rover-badge">NASA VIPER (POLAR PROSPECTOR)</span>
+              </div>
+            </div>
+
+            <div class="modal-actions-row">
+              <button class="blink-prompt launch-large-btn" id="btn-start-game" type="button">
+                🚀 LAUNCH EXPEDITION [SPACE / CLICK]
+              </button>
+              <button class="hangar-select-btn" id="btn-open-hangar-start" type="button">
+                CHOOSE NASA ROVER FLEET [R]
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay: Pop-up Mission Card (Intercepted Telemetry Data) -->
+        <div class="lcd-overlay hidden" id="overlay-mission" role="dialog" aria-modal="true" aria-labelledby="mission-title">
+          <div class="mission-card" id="mission-card-content">
+            <div class="mission-card-header">
+              <span>*** TELEMETRY ***</span>
+              <span id="mission-type-tag">ABANDONED</span>
+            </div>
+
+            <div class="mission-name" id="mission-title">OPPORTUNITY (MER-B)</div>
+
+            <div class="mission-field">
+              <span class="mission-field-label">TARGET BODY:</span>
+              <span class="mission-field-val" id="mission-body">MARS (MERIDIANI PLANUM)</span>
+            </div>
+
+            <div class="mission-field">
+              <span class="mission-field-label">MISSION DATES:</span>
+              <span class="mission-field-val" id="mission-dates">2003 - 2019 (5,352 SOLS)</span>
+            </div>
+
+            <div class="mission-field">
+              <span class="mission-field-label">KEY DISCOVERY:</span>
+              <span class="mission-field-val" id="mission-discovery">DISCOVERED HEMATITE SPHERULES PROVING PAST LIQUID WATER ON MARS.</span>
+            </div>
+
+            <div class="mission-field">
+              <span class="mission-field-label">RECORDED STATUS:</span>
+              <span class="mission-status-pill" id="mission-status">MISSION COMPLETE</span>
+            </div>
+
+            <button class="mission-resume-btn" id="btn-resume-mission" type="button">
+              [ SPACE / CLICK TO RESUME ]
+            </button>
+          </div>
+        </div>
+
+        <!-- Overlay: Sector Transition Alert (Briefing when switching Moon / Mars) -->
+        <div class="lcd-overlay hidden" id="overlay-sector" role="dialog" aria-modal="true">
+          <div class="sector-brief-box" id="sector-brief-card">
+            <div class="sector-brief-hdr">
+              <span>** SECTOR RE-ALIGNMENT **</span>
+            </div>
+            <div class="sector-target-name" id="sector-target-display">MOON: NOBILE CRATER</div>
+            <div class="sector-specs" id="sector-specs-display">
+              GRAV: 1.62 m/s² | TEMP: -180°C<br>
+              DETECTION: WATER ICE VOLATILES<br>
+              HAZARDS: EJECTA BOULDER CLUSTERS
+            </div>
+            <button class="mission-resume-btn" id="btn-confirm-sector" type="button">
+              DEPLOY VIPER
+            </button>
+          </div>
+        </div>
+
+        <!-- Overlay: NASA Rover Fleet Hangar Selection -->
+        <div class="lcd-overlay hidden" id="overlay-hangar" role="dialog" aria-modal="true" aria-labelledby="hangar-heading">
+          <div class="hangar-modal-box" id="hangar-modal-card">
+            <div class="hangar-modal-hdr">
+              <span id="hangar-heading">** NASA ROVER FLEET **</span>
+              <span id="hangar-counter">1/6</span>
+            </div>
+
+            <!-- Rover Selection Carousel Navigation -->
+            <div class="hangar-nav-row">
+              <button class="hangar-nav-arrow" id="btn-hangar-prev" type="button" aria-label="Previous Rover">◀</button>
+              <div class="hangar-rover-title" id="hangar-rover-name">NASA VIPER</div>
+              <button class="hangar-nav-arrow" id="btn-hangar-next" type="button" aria-label="Next Rover">▶</button>
+            </div>
+
+            <!-- Quick Rover Switcher Pills -->
+            <div class="hangar-pills-strip" id="hangar-pills-list">
+              <button class="hangar-pill active" data-rover="VIPER" type="button">VIPER</button>
+              <button class="hangar-pill" data-rover="CURIOSITY" type="button">CURIOSITY</button>
+              <button class="hangar-pill" data-rover="PERSEVERANCE" type="button">PERSEV.</button>
+              <button class="hangar-pill" data-rover="OPPORTUNITY" type="button">OPPY</button>
+              <button class="hangar-pill" data-rover="SOJOURNER" type="button">SOJOURN.</button>
+              <button class="hangar-pill" data-rover="LRV" type="button">APOLLO</button>
+            </div>
+
+            <!-- Rover Pixel-Art Blueprint Canvas Preview & Destination Badge -->
+            <div class="hangar-preview-section">
+              <canvas id="hangar-preview-canvas" width="180" height="72" aria-label="Rover Chassis Blueprint Preview"></canvas>
+              <div class="hangar-badge-row">
+                <span class="hangar-planet-badge" id="hangar-planet-tag">MOON [NOBILE]</span>
+                <span class="hangar-status-badge" id="hangar-status-tag">ACTIVE / 2025</span>
+              </div>
+            </div>
+
+            <!-- Specifications Dossier -->
+            <div class="hangar-specs-box" id="hangar-specs-info">
+              <div class="hangar-spec-row">
+                <span class="spec-label">TYPE:</span>
+                <span class="spec-val" id="spec-type">POLAR WATER ICE PROSPECTOR</span>
+              </div>
+              <div class="hangar-spec-row">
+                <span class="spec-label">MASS/SPD:</span>
+                <span class="spec-val" id="spec-mass-speed">430 KG | 0.72 KM/H</span>
+              </div>
+              <div class="hangar-spec-row">
+                <span class="spec-label">POWER:</span>
+                <span class="spec-val" id="spec-power">SOLAR + 50AH BATTERIES</span>
+              </div>
+              <div class="hangar-spec-row">
+                <span class="spec-label">PAYLOAD:</span>
+                <span class="spec-val" id="spec-payload">TRIDENT 1M DRILL, NSS, HEADLIGHTS</span>
+              </div>
+              <div class="hangar-spec-row">
+                <span class="spec-label">RECORD:</span>
+                <span class="spec-val" id="spec-record">FIRST ROVER WITH CRATER HEADLIGHTS</span>
+              </div>
+            </div>
+
+            <!-- Action Row -->
+            <div class="hangar-action-row">
+              <button class="hangar-deploy-btn" id="btn-hangar-deploy" type="button">
+                DEPLOY THIS ROVER
+              </button>
+              <button class="hangar-back-btn" id="btn-hangar-close" type="button">
+                CLOSE
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay: Game Over Screen -->
+        <div class="lcd-overlay hidden" id="overlay-gameover" role="dialog" aria-modal="true">
+          <div class="modal-dialog-box gameover-dialog-box">
+            <h2 class="gameover-title" id="gameover-heading">EXPEDITION COMPLETE</h2>
+            <p class="title-sub">MISSION TELEMETRY ARCHIVED</p>
+            <div class="gameover-stats" id="gameover-summary">
+              FINAL SCORE: <span id="gov-score">00000</span><br>
+              MISSIONS RECOVERED: <span id="gov-missions">0</span><br>
+              DATA LOGGED: <span id="gov-scans">0</span><br>
+              MAX EXPLORATION: <span id="gov-dist">0 METERS</span><br>
+              SURFACE TIME: <span id="gov-time">00:00</span>
+            </div>
+            <div class="modal-actions-row">
+              <button class="blink-prompt" id="btn-restart-game" type="button">
+                🔄 NEW EXPLORATION [SPACE]
+              </button>
+              <button class="abort-mission-btn" id="btn-gameover-to-home" type="button">
+                🏠 RETURN TO MISSION BRIEFING / HOME SCREEN
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay: Pause Screen -->
+        <div class="lcd-overlay hidden" id="overlay-pause">
+          <div class="modal-dialog-box pause-dialog-box">
+            <h2 class="title-glitch" id="pause-heading">TELEMETRY STANDBY</h2>
+            <p class="title-sub" id="pause-sub">MISSION EXPLORATION PAUSED</p>
+            <div class="modal-actions-row">
+              <button class="blink-prompt" id="btn-resume-pause" type="button">
+                ▶ CONTINUE EXPLORING [SPACE / P]
+              </button>
+              <button class="hangar-select-btn" id="btn-open-hangar-pause" type="button">
+                🚀 CHANGE ROVER FLEET [R]
+              </button>
+              <button class="abort-mission-btn" id="btn-abort-to-home" type="button">
+                🏠 ABORT MISSION TO HOME SCREEN [ESC]
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay: Desktop Keyboard Shortcuts Help -->
+        <div class="lcd-overlay hidden" id="overlay-help" role="dialog" aria-modal="true" aria-labelledby="help-title">
+          <div class="modal-dialog-box help-card">
+            <div class="sector-brief-hdr">
+              <span id="help-title">** DESKTOP CONTROLS & SHORTCUTS **</span>
+            </div>
+            <div class="help-grid">
+              <div class="help-row"><span class="key-badge">W, A, S, D</span> / <span class="key-badge">ARROWS</span> <span class="help-desc">STEER ROVER</span></div>
+              <div class="help-row"><span class="key-badge">MOUSE CLICK</span> <span class="help-desc">CLICK TOWARDS DIRECTION TO STEER</span></div>
+              <div class="help-row"><span class="key-badge">ESC</span> <span class="help-desc">ABORT MISSION / RETURN TO HOME SCREEN</span></div>
+              <div class="help-row"><span class="key-badge">2</span> <span class="help-desc">DEPLOY / DOCK PLAYER 2 ESCORT DRONE</span></div>
+              <div class="help-row"><span class="key-badge">R</span> <span class="help-desc">OPEN NASA ROVER FLEET HANGAR</span></div>
+              <div class="help-row"><span class="key-badge">TAB</span> <span class="help-desc">SELECT SURFACE (LOCKED MID-MISSION)</span></div>
+              <div class="help-row"><span class="key-badge">T</span> <span class="help-desc">CYCLE ENGINE SPEED (1X / 2X / TURBO)</span></div>
+              <div class="help-row"><span class="key-badge">SPACE</span> / <span class="key-badge">ENTER</span> <span class="help-desc">LAUNCH / CONFIRM / UNPAUSE</span></div>
+              <div class="help-row"><span class="key-badge">P</span> <span class="help-desc">PAUSE / RESUME MISSION</span></div>
+              <div class="help-row"><span class="key-badge">M</span> <span class="help-desc">MUTE / UNMUTE 8-BIT AUDIO</span></div>
+              <div class="help-row"><span class="key-badge">F</span> <span class="help-desc">TOGGLE BROWSER FULLSCREEN</span></div>
+              <div class="help-row"><span class="key-badge">H</span> <span class="help-desc">TOGGLE THIS SHORTCUTS MENU</span></div>
+            </div>
+            <button class="mission-resume-btn" id="btn-close-help" type="button">
+              [ CLOSE GUIDE ]
+            </button>
+          </div>
+        </div>
+
+        <!-- Sleek Desktop Keyboard Shortcuts Pill at Bottom of Screen -->
+        <footer class="desktop-bottom-bar" id="desktop-keyboard-hints">
+          <div class="controls-pill-strip">
+            <span class="key-chip"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> STEER</span>
+            <span class="key-chip"><kbd>ESC</kbd> HOME/ABORT</span>
+            <span class="key-chip"><kbd>2</kbd> 2P DRONE</span>
+            <span class="key-chip"><kbd>R</kbd> FLEET</span>
+            <span class="key-chip"><kbd>P</kbd> PAUSE</span>
+            <span class="key-chip"><kbd>M</kbd> SOUND</span>
+            <span class="key-chip"><kbd>F</kbd> FULLSCREEN</span>
+            <span class="key-chip"><kbd>H</kbd> HELP</span>
+          </div>
+        </footer>
+
+      </section>
+    </main>
+
+    <!-- React App Overlay Layer (Auth, Dashboard, Artifacts Gallery, Leaderboard, Settings, Admin Panel) -->
+    <div id="root"></div>
+
+    <!-- Game Engine Entrypoint -->
+    <script type="module" src="./game.js"></script>
+    <!-- React Main App Entrypoint -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

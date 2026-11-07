@@ -1,0 +1,1114 @@
+/* =========================================================
+   ABANDONED BUT NOT FORGOTTEN - FULLSCREEN DESKTOP GAME STYLES
+   Retro 1990s Nokia / Game Boy LCD Monochrome Aesthetic
+   Palette:
+     Darkest:  #0F380F (deep pixel dark)
+     Dark:     #306230 (shadow / mid-tone)
+     Light:    #8BAC0F (highlight / accent)
+     Lightest: #9BBC0F (monochrome LCD background)
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root, [data-surface="MOON"] {
+  --lcd-darkest: #0F380F;
+  --lcd-dark: #306230;
+  --lcd-light: #8BAC0F;
+  --lcd-lightest: #9BBC0F;
+  --lcd-glow: rgba(15, 56, 15, 0.35);
+  
+  --hud-bg-1: rgba(11, 15, 22, 0.96);
+  --hud-bg-2: rgba(18, 25, 36, 0.88);
+  --hud-border: #306230;
+  --hud-accent: #9BBC0F;
+  --hud-text: #e2f0fd;
+  --hud-muted: #8bb3e8;
+  --btn-bg: rgba(26, 36, 50, 0.85);
+  --btn-border: rgba(80, 115, 160, 0.45);
+  --btn-hover: rgba(45, 62, 86, 0.95);
+  --btn-active: rgba(16, 24, 34, 0.95);
+}
+
+[data-surface="MARS"] {
+  --lcd-darkest: #221206;
+  --lcd-dark: #5a3814;
+  --lcd-light: #9a7329;
+  --lcd-lightest: #cfb36e;
+  --lcd-glow: rgba(34, 18, 6, 0.35);
+  
+  --hud-bg-1: rgba(22, 14, 11, 0.96);
+  --hud-bg-2: rgba(36, 24, 18, 0.88);
+  --hud-border: #5a3814;
+  --hud-accent: #cfb36e;
+  --hud-text: #ffeada;
+  --hud-muted: #e6a77e;
+  --btn-bg: rgba(48, 30, 24, 0.85);
+  --btn-border: rgba(150, 95, 75, 0.45);
+  --btn-hover: rgba(75, 48, 38, 0.95);
+  --btn-active: rgba(28, 16, 12, 0.95);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #080b10;
+  color: var(--lcd-darkest);
+  font-family: 'Press Start 2P', monospace, sans-serif;
+}
+
+/* Master Desktop Game Container - Fills Full Screen */
+.desktop-game-container {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: #080b10;
+}
+
+/* Fullscreen Viewport for Game */
+.desktop-viewport {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--lcd-lightest);
+}
+
+/* Subtle CRT & Dot-Matrix Scanlines Layer */
+.desktop-viewport::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(rgba(15, 56, 15, 0.035) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(15, 56, 15, 0.035) 50%, transparent 50%);
+  background-size: 3px 3px, 3px 3px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Subtle Screen Vignette */
+.desktop-viewport::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 75%, rgba(0, 0, 0, 0.35) 100%);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* Fullscreen HTML5 Game Canvas */
+#game-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  background-color: var(--lcd-lightest);
+  cursor: crosshair;
+}
+
+/* =========================================================
+   TOP DESKTOP GAME HUD & ICON TOOLBAR
+   ========================================================= */
+.desktop-hud-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: 64px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, var(--hud-bg-1) 0%, var(--hud-bg-2) 100%);
+  border-bottom: 2px solid var(--hud-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.75);
+  gap: 14px;
+}
+
+/* Left Telemetry Group */
+.hud-left-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.hud-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--hud-text);
+  line-height: 1;
+}
+
+.hud-label {
+  color: var(--hud-muted);
+  font-size: 8.5px;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+}
+
+.hud-val {
+  color: var(--hud-accent);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 10px rgba(155, 188, 15, 0.45);
+}
+
+/* Lives Pips Indicator */
+.lives-container {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.life-pip {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: var(--hud-accent);
+  border: 1.5px solid var(--lcd-darkest);
+  box-shadow: 0 0 6px rgba(155, 188, 15, 0.7);
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.life-pip.lost {
+  background-color: rgba(15, 56, 15, 0.2);
+  border-color: #2b3b2b;
+  box-shadow: none;
+}
+
+/* Secondary Telemetry Strip */
+.hud-telemetry-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-left: 1.5px solid rgba(80, 115, 160, 0.4);
+  padding-left: 14px;
+}
+
+.telemetry-item {
+  color: #a8cdfc;
+  font-size: 8.5px;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+}
+
+.telemetry-badge {
+  background: rgba(30, 48, 70, 0.9);
+  border: 1px solid #4a6fa5;
+  color: #a8d5fc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+}
+
+.telemetry-badge.site-badge {
+  background: rgba(35, 55, 80, 0.95);
+  color: #c0e0ff;
+  border-color: #5585b5;
+}
+
+.telemetry-badge.p2-badge-hud {
+  background: rgba(15, 50, 60, 0.9);
+  border-color: #1f6b80;
+  color: #64dfdf;
+  transition: all 0.3s ease;
+}
+
+/* Center Observation Ticker */
+.observation-ticker {
+  font-size: 9.5px;
+  color: var(--hud-accent);
+  background: rgba(15, 56, 15, 0.45);
+  border: 1.5px solid var(--hud-border);
+  padding: 8px 16px;
+  border-radius: 6px;
+  letter-spacing: 0.8px;
+  max-width: 480px;
+  min-width: 240px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.95;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.observation-ticker.active {
+  border-color: var(--hud-accent);
+  background: rgba(15, 56, 15, 0.9);
+  box-shadow: 0 0 16px rgba(155, 188, 15, 0.6);
+  animation: pulseTicker 1s infinite alternate;
+}
+
+@keyframes pulseTicker {
+  from { opacity: 0.88; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* =========================================================
+   RIGHT DESKTOP GAME ICON TOOLBAR
+   ========================================================= */
+.desktop-icon-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.icon-tool-btn {
+  width: 44px;
+  height: 44px;
+  background: var(--btn-bg);
+  border: 1.5px solid var(--btn-border);
+  border-radius: 8px;
+  color: var(--hud-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  padding: 2px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.icon-tool-btn:hover {
+  background: var(--btn-hover);
+  border-color: #6bb3ff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+}
+
+.icon-tool-btn:active {
+  background: var(--btn-active);
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.icon-tool-btn .tool-icon {
+  width: 19px;
+  height: 19px;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+.icon-sub-badge {
+  font-size: 6.5px;
+  line-height: 1;
+  margin-top: 2px;
+  color: var(--hud-muted);
+  font-weight: bold;
+  max-width: 38px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.key-hint {
+  position: absolute;
+  bottom: -4px;
+  right: -3px;
+  background: #080d14;
+  border: 1px solid #304663;
+  border-radius: 3px;
+  font-size: 6px;
+  line-height: 1;
+  padding: 1px 3px;
+  color: #72a4e2;
+  pointer-events: none;
+  letter-spacing: 0;
+}
+
+/* Home / Abort Tool Button */
+.icon-tool-btn.home-tool-btn {
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #bae6fd;
+}
+
+.icon-tool-btn.home-tool-btn:hover {
+  border-color: #38bdf8;
+  background: rgba(14, 116, 144, 0.6);
+  color: #ffffff;
+}
+
+/* Surface Locked Indicator */
+.icon-tool-btn.surface-locked {
+  border-color: rgba(245, 158, 11, 0.55);
+  color: #fde68a;
+  opacity: 0.85;
+}
+
+.icon-tool-btn.surface-locked:hover {
+  border-color: #f59e0b;
+}
+
+/* Player 2 Active Button State */
+.icon-tool-btn.p2-btn.p2-active {
+  background: rgba(0, 180, 216, 0.28);
+  border-color: #00e5ff;
+  color: #00e5ff;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+
+.icon-tool-btn.p2-btn.p2-active .p2-dot-badge {
+  color: #00e5ff;
+  animation: p2Glow 1s infinite alternate;
+}
+
+@keyframes p2Glow {
+  from { opacity: 0.7; }
+  to { opacity: 1; text-shadow: 0 0 6px #00e5ff; }
+}
+
+/* Sound Muted State */
+.icon-tool-btn.sound-muted {
+  opacity: 0.7;
+  color: #8899aa;
+}
+
+/* =========================================================
+   BOTTOM DESKTOP SHORTCUTS BAR
+   ========================================================= */
+.desktop-bottom-bar {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  background: rgba(10, 14, 20, 0.92);
+  border: 1.5px solid rgba(80, 115, 160, 0.45);
+  border-radius: 24px;
+  padding: 7px 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.controls-pill-strip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 8px;
+  color: #a8c2de;
+  white-space: nowrap;
+}
+
+.key-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.key-chip kbd {
+  background: #192332;
+  border: 1px solid #3b4d66;
+  border-radius: 3px;
+  padding: 1.5px 5px;
+  color: #93c5fd;
+  font-size: 7.5px;
+  font-family: inherit;
+}
+
+/* =========================================================
+   MODAL OVERLAYS & DIALOG BOXES
+   ========================================================= */
+.lcd-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(8, 12, 18, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+  text-align: center;
+  color: var(--lcd-darkest);
+  transition: opacity 0.2s ease-in-out;
+}
+
+.lcd-overlay.hidden {
+  display: none !important;
+}
+
+/* Unified Modal Dialog Box */
+.modal-dialog-box {
+  max-width: 660px;
+  width: 94%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--lcd-lightest);
+  border: 4px solid var(--lcd-darkest);
+  padding: 24px 28px;
+  box-shadow: 8px 8px 0 var(--lcd-dark), 0 20px 50px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+  animation: modalEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalEnter {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.mission-badge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  padding: 5px 10px;
+  font-size: 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Title / Start Screen */
+.title-glitch {
+  font-size: 22px;
+  line-height: 1.35;
+  color: var(--lcd-darkest);
+  letter-spacing: 1.5px;
+}
+
+.title-sub {
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--lcd-dark);
+  letter-spacing: 0.8px;
+}
+
+/* Direct Destination Selector on Home Screen */
+.planet-select-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(15, 56, 15, 0.08);
+  border: 2px dashed var(--lcd-dark);
+  padding: 12px;
+  margin: 2px 0;
+}
+
+.planet-select-title {
+  font-size: 8.5px;
+  font-weight: bold;
+  color: var(--lcd-dark);
+  letter-spacing: 0.8px;
+}
+
+.planet-pills-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.planet-pick-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 10px;
+  background: rgba(15, 56, 15, 0.1);
+  border: 2.5px solid var(--lcd-dark);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--lcd-darkest);
+}
+
+.planet-pick-btn:hover {
+  background: var(--lcd-light);
+  transform: translateY(-1px);
+}
+
+.planet-pick-btn.active {
+  background: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  border-color: var(--lcd-darkest);
+  box-shadow: 4px 4px 0 var(--lcd-dark);
+}
+
+.planet-icon {
+  font-size: 18px;
+}
+
+.planet-name {
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.planet-sub {
+  font-size: 7px;
+  opacity: 0.85;
+}
+
+.instructions-box {
+  border: 2px dashed var(--lcd-dark);
+  padding: 14px 16px;
+  font-size: 9px;
+  line-height: 1.8;
+  text-align: left;
+  background: rgba(15, 56, 15, 0.08);
+}
+
+.inst-line {
+  margin-bottom: 4px;
+}
+
+.start-meta-box {
+  border: 1.5px solid var(--lcd-dark);
+  padding: 10px 14px;
+  font-size: 8.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(15, 56, 15, 0.06);
+  text-align: left;
+  color: var(--lcd-dark);
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meta-lbl {
+  font-weight: bold;
+}
+
+.meta-val {
+  font-weight: 800;
+  color: var(--lcd-darkest);
+}
+
+.modal-actions-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.blink-prompt {
+  font-size: 11px;
+  padding: 14px 20px;
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  border: 2px solid var(--lcd-darkest);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  letter-spacing: 0.8px;
+  box-shadow: 4px 4px 0 var(--lcd-dark);
+  transition: all 0.15s ease;
+}
+
+.blink-prompt:hover {
+  background-color: var(--lcd-dark);
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 var(--lcd-darkest);
+}
+
+.blink-prompt:active {
+  transform: translateY(1px);
+  box-shadow: 2px 2px 0 var(--lcd-dark);
+}
+
+.launch-large-btn {
+  font-size: 12px;
+  padding: 16px 24px;
+  letter-spacing: 1px;
+}
+
+.hangar-select-btn {
+  font-size: 9.5px;
+  padding: 12px 18px;
+  background-color: transparent;
+  color: var(--lcd-darkest);
+  border: 2.5px solid var(--lcd-dark);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  transition: all 0.15s ease;
+}
+
+.hangar-select-btn:hover {
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  transform: translateY(-1px);
+}
+
+/* Abort Mission Button */
+.abort-mission-btn {
+  background-color: #7f1d1d;
+  color: #fef2f2;
+  border: 2px solid #ef4444;
+  padding: 12px 18px;
+  font-family: inherit;
+  font-size: 9.5px;
+  font-weight: bold;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 3px 3px 0 #450a0a;
+  transition: all 0.15s ease;
+}
+
+.abort-mission-btn:hover {
+  background-color: #991b1b;
+  border-color: #f87171;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 4px 4px 0 #450a0a;
+}
+
+.abort-mission-btn:active {
+  transform: translateY(1px);
+  box-shadow: 1px 1px 0 #450a0a;
+}
+
+/* Pop-up Mission Card Overlay */
+.mission-card {
+  max-width: 600px;
+  width: 94%;
+  background-color: var(--lcd-lightest);
+  border: 4px solid var(--lcd-darkest);
+  padding: 22px 26px;
+  box-shadow: 8px 8px 0 var(--lcd-dark), 0 20px 50px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.mission-card-header {
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  padding: 6px 10px;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mission-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--lcd-darkest);
+  border-bottom: 2.5px solid var(--lcd-dark);
+  padding-bottom: 6px;
+  letter-spacing: 0.8px;
+}
+
+.mission-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mission-field-label {
+  font-size: 8px;
+  color: var(--lcd-dark);
+  font-weight: bold;
+}
+
+.mission-field-val {
+  font-size: 9.5px;
+  line-height: 1.7;
+  color: var(--lcd-darkest);
+}
+
+.mission-status-pill {
+  display: inline-block;
+  background-color: var(--lcd-dark);
+  color: var(--lcd-lightest);
+  padding: 4px 8px;
+  font-size: 8px;
+  border-radius: 3px;
+  align-self: flex-start;
+  font-weight: bold;
+}
+
+.mission-resume-btn {
+  margin-top: 8px;
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  border: none;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 3px 3px 0 var(--lcd-dark);
+  transition: all 0.15s ease;
+}
+
+.mission-resume-btn:hover {
+  background-color: var(--lcd-dark);
+  transform: translateY(-1px);
+}
+
+.mission-resume-btn:active {
+  transform: translateY(1px);
+}
+
+/* Sector Transition Briefing Modal */
+.sector-brief-box {
+  max-width: 580px;
+  width: 94%;
+  background-color: var(--lcd-lightest);
+  border: 4px solid var(--lcd-darkest);
+  padding: 20px 24px;
+  box-shadow: 8px 8px 0 var(--lcd-dark), 0 20px 45px rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.sector-brief-hdr {
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  padding: 6px 10px;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.sector-target-name {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--lcd-darkest);
+  border-bottom: 2.5px solid var(--lcd-dark);
+  padding-bottom: 6px;
+}
+
+.sector-specs {
+  font-size: 9px;
+  line-height: 1.8;
+  color: var(--lcd-darkest);
+}
+
+/* NASA Rover Fleet Hangar Modal */
+.hangar-modal-box {
+  max-width: 640px;
+  width: 94%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--lcd-lightest);
+  border: 4px solid var(--lcd-darkest);
+  padding: 18px 22px;
+  box-shadow: 8px 8px 0 var(--lcd-dark), 0 20px 50px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.hangar-modal-hdr {
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  padding: 6px 10px;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.hangar-nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2.5px solid var(--lcd-dark);
+  padding-bottom: 6px;
+}
+
+.hangar-rover-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--lcd-darkest);
+  text-align: center;
+  letter-spacing: 0.8px;
+}
+
+.hangar-nav-arrow {
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.hangar-nav-arrow:hover {
+  background-color: var(--lcd-dark);
+}
+
+.hangar-pills-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.hangar-pill {
+  background-color: transparent;
+  border: 1.5px solid var(--lcd-dark);
+  color: var(--lcd-darkest);
+  font-family: inherit;
+  font-size: 7.5px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  font-weight: bold;
+}
+
+.hangar-pill:hover {
+  background-color: var(--lcd-light);
+}
+
+.hangar-pill.active {
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  border-color: var(--lcd-darkest);
+}
+
+.hangar-preview-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(15, 56, 15, 0.08);
+  border: 2px dashed var(--lcd-dark);
+  padding: 10px;
+  gap: 8px;
+}
+
+#hangar-preview-canvas {
+  width: 220px;
+  height: 80px;
+  image-rendering: pixelated;
+}
+
+.hangar-badge-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.hangar-planet-badge, .hangar-status-badge {
+  font-size: 7.5px;
+  padding: 4px 8px;
+  background-color: var(--lcd-dark);
+  color: var(--lcd-lightest);
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.hangar-specs-box {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-top: 1.5px solid var(--lcd-dark);
+  padding-top: 6px;
+}
+
+.hangar-spec-row {
+  display: flex;
+  font-size: 7.5px;
+  line-height: 1.5;
+}
+
+.spec-label {
+  color: var(--lcd-dark);
+  font-weight: bold;
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.spec-val {
+  color: var(--lcd-darkest);
+  word-break: break-word;
+}
+
+.hangar-action-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.hangar-deploy-btn {
+  flex: 1;
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  border: none;
+  font-family: inherit;
+  font-size: 9.5px;
+  font-weight: bold;
+  padding: 12px 10px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 3px 3px 0 var(--lcd-dark);
+}
+
+.hangar-deploy-btn:hover {
+  background-color: var(--lcd-dark);
+}
+
+.hangar-back-btn {
+  background-color: transparent;
+  border: 2px solid var(--lcd-dark);
+  color: var(--lcd-darkest);
+  font-family: inherit;
+  font-size: 9.5px;
+  font-weight: bold;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.hangar-back-btn:hover {
+  background-color: var(--lcd-dark);
+  color: var(--lcd-lightest);
+}
+
+/* Game Over Overlay */
+.gameover-title {
+  font-size: 22px;
+  color: var(--lcd-darkest);
+  letter-spacing: 1.2px;
+}
+
+.gameover-stats {
+  font-size: 10px;
+  line-height: 2.1;
+  text-align: left;
+  border: 2px dashed var(--lcd-dark);
+  padding: 14px 18px;
+  background: rgba(15, 56, 15, 0.08);
+}
+
+/* Desktop Help Card */
+.help-card {
+  max-width: 620px;
+  text-align: left;
+}
+
+.help-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 10px 0;
+}
+
+.help-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed var(--lcd-dark);
+  padding-bottom: 6px;
+  font-size: 8px;
+  gap: 12px;
+}
+
+.key-badge {
+  background-color: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.help-desc {
+  color: var(--lcd-darkest);
+  font-size: 8px;
+  text-align: right;
+}
+
+/* Responsive adjustments */
+@media (max-width: 980px) {
+  .hud-telemetry-strip {
+    display: none;
+  }
+  .observation-ticker {
+    max-width: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-hud-bar {
+    height: 56px;
+    padding: 0 10px;
+  }
+  .observation-ticker {
+    display: none;
+  }
+  .icon-tool-btn {
+    width: 38px;
+    height: 38px;
+  }
+  .icon-sub-badge {
+    display: none;
+  }
+  .desktop-bottom-bar {
+    display: none;
+  }
+}

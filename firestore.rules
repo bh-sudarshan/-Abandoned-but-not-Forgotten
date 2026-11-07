@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email == 'bhsudarshan0@gmail.com' && request.auth.token.email_verified == true) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Entity Validators
+    function isValidUserProfile(data) {
+      return data.uid is string && data.uid == request.auth.uid &&
+             data.displayName is string && data.displayName.size() > 0 && data.displayName.size() <= 100 &&
+             (!('email' in data) || (data.email is string && data.email.size() <= 120)) &&
+             (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 500)) &&
+             (!('totalObjectsFound' in data) || data.totalObjectsFound is number) &&
+             (!('moonObjectsFound' in data) || data.moonObjectsFound is number) &&
+             (!('marsObjectsFound' in data) || data.marsObjectsFound is number) &&
+             (!('highScore' in data) || data.highScore is number) &&
+             (!('moonScore' in data) || data.moonScore is number) &&
+             (!('marsScore' in data) || data.marsScore is number) &&
+             (!('favoriteVehicle' in data) || (data.favoriteVehicle is string && data.favoriteVehicle.size() <= 50)) &&
+             (!('soundEnabled' in data) || data.soundEnabled is bool) &&
+             (!('speedMode' in data) || (data.speedMode is string && data.speedMode.size() <= 30));
+    }
+
+    function isValidUserDiscovery(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.objectId is string && data.objectId.size() > 0 && data.objectId.size() <= 100 &&
+             data.objectName is string && data.objectName.size() > 0 && data.objectName.size() <= 120 &&
+             data.targetBody is string && (data.targetBody == 'MOON' || data.targetBody == 'MARS') &&
+             (!('points' in data) || data.points is number) &&
+             (!('coordinates' in data) || (data.coordinates is string && data.coordinates.size() <= 60)) &&
+             (!('roverUsed' in data) || (data.roverUsed is string && data.roverUsed.size() <= 60)) &&
+             (!('foundAt' in data) || (data.foundAt is string && data.foundAt.size() <= 50));
+    }
+
+    function isValidAbandonedObject(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 120 &&
+             data.targetBody is string && (data.targetBody == 'MOON' || data.targetBody == 'MARS') &&
+             data.body is string && data.body.size() > 0 && data.body.size() <= 120 &&
+             data.dates is string && data.dates.size() > 0 && data.dates.size() <= 100 &&
+             data.discovery is string && data.discovery.size() > 0 && data.discovery.size() <= 1500 &&
+             data.status is string && data.status.size() > 0 && data.status.size() <= 100 &&
+             data.points is number &&
+             (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 1000));
+    }
+
+    function isValidVehicle(data) {
+      return data.id is string && data.id.size() > 0 && data.id.size() <= 50 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 50 &&
+             data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 120 &&
+             data.destination is string && (data.destination == 'MOON' || data.destination == 'MARS') &&
+             data.type is string && data.type.size() > 0 && data.type.size() <= 120 &&
+             (!('site' in data) || (data.site is string && data.site.size() <= 120)) &&
+             (!('massSpeed' in data) || (data.massSpeed is string && data.massSpeed.size() <= 100)) &&
+             (!('power' in data) || (data.power is string && data.power.size() <= 120)) &&
+             (!('payload' in data) || (data.payload is string && data.payload.size() <= 250)) &&
+             (!('record' in data) || (data.record is string && data.record.size() <= 250)) &&
+             (!('status' in data) || (data.status is string && data.status.size() <= 100)) &&
+             (!('telemetryKey' in data) || (data.telemetryKey is string && data.telemetryKey.size() <= 30)) &&
+             (!('isAvailable' in data) || data.isAvailable is bool);
+    }
+
+    // 1. User Profiles & Leaderboards
+    // Anyone can read user summaries for the global leaderboard, but write is strictly owner or admin
+    match /users/{userId} {
+      allow get: if true;
+      allow list: if true;
+
+      allow create: if isOwner(userId) && isValidUserProfile(incoming());
+      
+      allow update: if (isOwner(userId) || isAdmin()) &&
+                       isValidUserProfile(incoming()) &&
+                       incoming().uid == existing().uid;
+                       
+      allow delete: if isAdmin();
+
+      // Discoveries subcollection under user
+      match /discoveries/{discoveryId} {
+        allow get: if true;
+        allow list: if true;
+        
+        allow create: if isOwner(userId) && isValidUserDiscovery(incoming());
+        
+        allow update: if (isOwner(userId) || isAdmin()) &&
+                         isValidUserDiscovery(incoming()) &&
+                         incoming().userId == existing().userId;
+                         
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // 2. Master Abandoned Objects Catalog
+    match /abandoned_objects/{objectId} {
+      allow get: if true;
+      allow list: if true;
+      
+      allow create: if isAdmin() && isValidAbandonedObject(incoming());
+      allow update: if isAdmin() && isValidAbandonedObject(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // 3. Master Vehicles / NASA Rover Fleet
+    match /vehicles/{vehicleId} {
+      allow get: if true;
+      allow list: if true;
+      
+      allow create: if isAdmin() && isValidVehicle(incoming());
+      allow update: if isAdmin() && isValidVehicle(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // 4. Admin whitelist collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Test collection for boot connectivity check
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}
